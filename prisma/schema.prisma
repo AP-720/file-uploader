@@ -41,3 +41,11 @@ model File {
   folder     Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId   Int
 }
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   
+  expiresAt DateTime
+}
+
