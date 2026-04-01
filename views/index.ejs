@@ -1,0 +1,22 @@
+<html>
+	<%- include("./partials/head.ejs") %>
+	<body>
+		<%- include("./partials/header.ejs") %>
+		<div class="content-container">
+			<%- include("./partials/errors.ejs") %>
+			<div class="login-container">
+				<h2>Log In</h2>
+				<form action="/log-in" method="post">
+					<label for="e-mail"
+						>E-mail: <input type="email" name="e-mail" id="e-mail"
+					/></label>
+					<label for="password"
+						>Password: <input type="password" name="password" id="password"
+					/></label>
+					<button class="justify-self-center" type="submit">Log In</button>
+				</form>
+				<a href="sign-up">Create account</a>
+			</div>
+		</div>
+	</body>
+</html>

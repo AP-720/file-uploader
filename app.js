@@ -15,15 +15,15 @@ app.set("view engine", "ejs");
 
 // Session store
 
+// Routers
+
+const indexRouter = require("./routes/index");
+
 // Middleware
 
 app.use(express.urlencoded({ extended: false }));
 
-
-
-// Routers
-
-
+app.use("/", indexRouter);
 
 app.listen(PORT, (error) => {
 	if (error) {

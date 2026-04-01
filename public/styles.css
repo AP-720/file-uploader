@@ -1,0 +1,108 @@
+@import "reset.css";
+
+:root {
+	/* Neutrals & Backgrounds */
+	--bg-main: oklch(98% 0.01 200);
+	--bg-surface: oklch(95% 0.01 200); /* Slightly darker for cards/sections */
+	--text-main: oklch(25% 0.01 200);
+
+	/* Primary: A soft, muted Sage Green */
+	--primary: oklch(75% 0.05 150);
+	--primary-hover: oklch(70% 0.06 150);
+	--primary-active: oklch(65% 0.07 150);
+
+	/* Secondary: A dusty Terracotta/Rose */
+	--secondary: oklch(75% 0.05 30);
+	--secondary-hover: oklch(70% 0.06 30);
+	--secondary-active: oklch(65% 0.07 30);
+
+	/* Border/Accent */
+	--border-soft: oklch(90% 0.02 200);
+
+	/* Spacing */
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+	--spacing-xxl: 3rem;
+
+	/* Shadow */
+	--shadow:
+		rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+body {
+	background-color: var(--bg-main);
+	margin: 0;
+	color: var(--text-main);
+	font-family: "Inter", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul {
+	margin: 0;
+}
+
+ul {
+	padding-left: var(--spacing-sm);
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:visited {
+	color: inherit;
+}
+
+/* Utilities  */
+
+.justify-self-center {
+	justify-self: center;
+}
+
+.content-container {
+	/* border: solid green; */
+	max-width: 1200px;
+	margin-inline: auto;
+}
+
+.header {
+	background-color: var(--primary);
+	padding: var(--spacing-md) 0 var(--spacing-md) 0;
+}
+
+.login-container {
+	background-color: var(--bg-surface);
+	border: solid var(--secondary);
+	border-radius: var(--spacing-xs);
+	margin: 10rem 0 0 0 ;
+	margin-inline: auto;
+	padding: var(--spacing-xxl) 0 var(--spacing-xxl) 0 ;
+	box-shadow: var(--shadow);
+	max-width: 50%;
+	display: grid;
+	grid-template-columns: 1fr;
+	justify-items: center;
+	gap: var(--spacing-sm);
+}
+
+.login-container > form {
+	display: grid;
+	gap: var(--spacing-md);
+}
+
+.login-container > form > label {
+	display: grid;
+}
