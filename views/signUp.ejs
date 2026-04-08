@@ -3,8 +3,9 @@
 	<body>
 		<%- include("./partials/header.ejs") %>
 		<div class="content-container">
-			<%- include("./partials/errors.ejs") %>
 			<div class="form-container">
+				<%- include("./partials/errors.ejs") %>
+
 				<h2>Sign Up</h2>
 				<form action="/sign-up" method="post">
 					<label for="firstName"

@@ -87,15 +87,17 @@ a:visited {
 	background-color: var(--bg-surface);
 	border: solid var(--secondary);
 	border-radius: var(--spacing-xs);
-	margin: 10rem 0 0 0;
+	margin: 5rem 0 0 0;
 	margin-inline: auto;
-	padding: var(--spacing-xxl) 0 var(--spacing-xxl) 0;
+	padding: var(--spacing-xxl) var(--spacing-md) var(--spacing-xxl)
+		var(--spacing-md);
 	box-shadow: var(--shadow);
 	max-width: 50%;
 	display: grid;
 	grid-template-columns: 1fr;
 	justify-items: center;
 	gap: var(--spacing-sm);
+	/* height: 100vh; */
 }
 
 .form-container > form {
@@ -105,4 +107,11 @@ a:visited {
 
 .form-container > form > label {
 	display: grid;
+}
+
+.error-container {
+	background-color: var(--secondary);
+	border: solid 1px var(--primary);
+	border-radius: var(--spacing-xs);
+	padding: var(--spacing-md);
 }
