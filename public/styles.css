@@ -83,13 +83,13 @@ a:visited {
 	padding: var(--spacing-md) 0 var(--spacing-md) 0;
 }
 
-.login-container {
+.form-container {
 	background-color: var(--bg-surface);
 	border: solid var(--secondary);
 	border-radius: var(--spacing-xs);
-	margin: 10rem 0 0 0 ;
+	margin: 10rem 0 0 0;
 	margin-inline: auto;
-	padding: var(--spacing-xxl) 0 var(--spacing-xxl) 0 ;
+	padding: var(--spacing-xxl) 0 var(--spacing-xxl) 0;
 	box-shadow: var(--shadow);
 	max-width: 50%;
 	display: grid;
@@ -98,11 +98,11 @@ a:visited {
 	gap: var(--spacing-sm);
 }
 
-.login-container > form {
+.form-container > form {
 	display: grid;
 	gap: var(--spacing-md);
 }
 
-.login-container > form > label {
+.form-container > form > label {
 	display: grid;
 }
