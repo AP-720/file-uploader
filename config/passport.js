@@ -5,6 +5,7 @@ const { prisma } = require("../lib/prisma");
 
 passport.use(
 	new LocalStrategy(
+		// Custom field name, email rather than username.
 		{ usernameField: "email" },
 		async (email, password, done) => {
 			try {
