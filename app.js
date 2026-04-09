@@ -8,6 +8,7 @@ const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { prisma } = require("./lib/prisma.js");
 const indexRouter = require("./routes/index");
 const signUpRouter = require("./routes/signUp");
+const folderRouter = require("./routes/folder");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -47,6 +48,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/", indexRouter);
 app.use("/sign-up", signUpRouter);
+app.use("/folder", folderRouter);
 
 app.listen(PORT, (error) => {
 	if (error) {

@@ -8,7 +8,7 @@ indexRouter.get("/", indexController.getIndex);
 indexRouter.post(
 	"/log-in",
 	passport.authenticate("local", {
-		successRedirect: "/",
+		successRedirect: "/folder",
 		failureRedirect: "/",
 	}),
 );
