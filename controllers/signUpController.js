@@ -63,9 +63,18 @@ const postSignup = [
 
 		try {
 			const hashedPassword = await bcrypt.hash(password, 10);
-			await prisma.user.create({
-				data: { firstName, lastName, email, password: hashedPassword },
+			await prisma.$transaction(async (tx) => {
+				const user = await tx.user.create({
+					data: { firstName, lastName, email, password: hashedPassword },
+				});
+				await tx.folder.create({
+					data: {
+						name: "root",
+						ownerId: user.id,
+					},
+				});
 			});
+
 			res.redirect("/");
 		} catch (err) {
 			console.error(err);
