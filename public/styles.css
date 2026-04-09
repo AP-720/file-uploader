@@ -73,10 +73,17 @@ a:visited {
 }
 
 .content-container {
-	/* border: solid green; */
 	max-width: 1200px;
 	margin-inline: auto;
 }
+
+.flex {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+/* Components */
 
 .header {
 	background-color: var(--primary);

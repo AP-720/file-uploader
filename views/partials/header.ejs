@@ -1,7 +1,14 @@
 <header class="header">
-	<div class="content-container">
+	<div class="content-container flex">
         <a href="/">
             <h1>File Uploader</h1>
         </a>
+        <div>
+            <% if(currentUser) { %>
+                <a href="/log-out">Log Out</a>
+            <% } else { %>
+                <a href="/">Log In</a>
+            <% } %>     
+        </div>
     </div>
 </header>

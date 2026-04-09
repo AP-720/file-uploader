@@ -12,5 +12,6 @@ indexRouter.post(
 		failureRedirect: "/",
 	}),
 );
+indexRouter.get("/log-out", indexController.getLogOut);
 
 module.exports = indexRouter;
