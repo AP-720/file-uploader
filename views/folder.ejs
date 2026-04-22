@@ -6,9 +6,15 @@
 			<%- include("./partials/errors.ejs") %>
 			<div class="form-container">
 				<h2>Upload</h2>
-				<form action="/log-in" method="post">
-					
-					<button class="justify-self-center" type="submit">Log In</button>
+				<form
+					action="/folder/upload"
+					method="post"
+					enctype="multipart/form-data"
+				>
+					<label for="upload"
+						>Select file:<input type="file" name="upload" id="upload"
+					/></label>
+					<button class="justify-self-center" type="submit">Upload</button>
 				</form>
 			</div>
 		</div>
