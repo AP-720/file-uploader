@@ -71,6 +71,7 @@ const postSignup = [
 					data: {
 						name: "root",
 						ownerId: user.id,
+						isRoot: true,
 					},
 				});
 			});
