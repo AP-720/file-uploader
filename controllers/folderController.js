@@ -1,3 +1,4 @@
+const { prisma } = require("../lib/prisma.js");
 const { isAuth } = require("../middleware/authMiddleware");
 const multer = require("multer");
 const path = require("path");
@@ -34,14 +35,45 @@ const upload = multer({ storage: storage });
 const getFolder = [
 	isAuth,
 	async (req, res) => {
-		res.render("folder", { title: "Folder" });
+		const userId = req.user.id;
+
+		try {
+			const rootFolder = await prisma.folder.findFirst({
+				where: {
+					ownerId: userId,
+					isRoot: true,
+				},
+				include: { files: true },
+			});
+			console.log(rootFolder);
+
+			res.render("folder", { title: "Folder", rootFolder });
+		} catch (error) {
+			console.error(error);
+			res.status(500).send("Server error");
+		}
 	},
 ];
 
 const postUploadFile = [
 	upload.single("upload"),
 	async (req, res) => {
-		res.redirect("/folder");
+		try {
+			const file = await prisma.file.create({
+				data: {
+					name: req.file.filename,
+					size: req.file.size,
+					url: req.file.path,
+					folderId: parseInt(req.body.folderId),
+				},
+			});
+			console.log(file);
+			
+			res.redirect("/folder");
+		} catch (error) {
+			console.error(error);
+			res.status(500).send("Server error");
+		}
 	},
 ];
 

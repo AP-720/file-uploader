@@ -46,7 +46,8 @@ h4,
 h5,
 h6,
 p,
-ul {
+ul,
+form {
 	margin: 0;
 }
 
@@ -94,17 +95,13 @@ a:visited {
 	background-color: var(--bg-surface);
 	border: solid var(--secondary);
 	border-radius: var(--spacing-xs);
-	margin: 5rem 0 0 0;
 	margin-inline: auto;
-	padding: var(--spacing-xxl) var(--spacing-md) var(--spacing-xxl)
-		var(--spacing-md);
+	padding: var(--spacing-xl) var(--spacing-md);
 	box-shadow: var(--shadow);
-	max-width: 50%;
 	display: grid;
 	grid-template-columns: 1fr;
 	justify-items: center;
 	gap: var(--spacing-sm);
-	/* height: 100vh; */
 }
 
 .form-container > form {
@@ -114,11 +111,45 @@ a:visited {
 
 .form-container > form > label {
 	display: grid;
+	justify-items: center;
 }
 
 .error-container {
 	background-color: var(--secondary);
 	border: solid 1px var(--primary);
 	border-radius: var(--spacing-xs);
+	padding: var(--spacing-md);
+}
+
+.file-container {
+	background-color: var(--bg-surface);
+	border: solid var(--secondary);
+	border-radius: var(--spacing-xs);
+	box-shadow: var(--shadow);
+	padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.layout-container {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: var(--spacing-md);
+	margin: var(--spacing-lg) 0 0 0;
+}
+
+.file-table {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.file-table > thead > tr {
+	border-bottom: 2px solid var(--primary-active);
+}
+
+.file-table > tbody {
+	text-align: center;
+}
+
+.file-table-cell {
 	padding: var(--spacing-md);
 }

@@ -3,19 +3,44 @@
 	<body>
 		<%- include("./partials/header.ejs") %>
 		<div class="content-container">
-			<%- include("./partials/errors.ejs") %>
-			<div class="form-container">
-				<h2>Upload</h2>
-				<form
-					action="/folder/upload"
-					method="post"
-					enctype="multipart/form-data"
-				>
-					<label for="upload"
-						>Select file:<input type="file" name="upload" id="upload"
-					/></label>
-					<button class="justify-self-center" type="submit">Upload</button>
-				</form>
+			<div class="layout-container">
+				<div class="file-container">
+					<h2>Files</h2>
+					<table class="file-table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Uploaded</th>
+								<th>Size</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% rootFolder.files.forEach((file) => { %>
+								<%- include('./partials/tableRow.ejs', {file}) %>
+						<%	}); %>
+						</tbody>
+						
+					</table>
+				</div>
+				<div>
+					<%- include("./partials/errors.ejs") %>
+					<div class="form-container">
+						<h2>Upload</h2>
+						<form
+							action="/folder/upload"
+							method="post"
+							enctype="multipart/form-data"
+						>
+							<label for="upload"
+								>Select file:<input type="file" name="upload" id="upload"
+							/></label>
+
+							<input type="text" name="folderId" value="<%= rootFolder.id %>" hidden>
+
+							<button class="justify-self-center" type="submit">Upload</button>
+						</form>
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>
