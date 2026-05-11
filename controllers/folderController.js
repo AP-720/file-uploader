@@ -32,6 +32,20 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+function formatFileSize(fileSize) {
+	const number = Number(fileSize);
+
+	if (number < 1e3) {
+		return number + "b";
+	} else if (number < 1e6) {
+		return (number / 1e3).toFixed(1) + "Kb";
+	} else if (number < 1e9) {
+		return (number / 1e6).toFixed(1) + "Mb";
+	} else {
+		return (number / 1e9).toFixed(1) + "Gb";
+	}
+}
+
 const getFolder = [
 	isAuth,
 	async (req, res) => {
@@ -45,9 +59,9 @@ const getFolder = [
 				},
 				include: { files: true },
 			});
-			console.log(rootFolder);
+			console.log("getFolder:", rootFolder);
 
-			res.render("folder", { title: "Folder", rootFolder });
+			res.render("folder", { title: "Folder", rootFolder, formatFileSize });
 		} catch (error) {
 			console.error(error);
 			res.status(500).send("Server error");
@@ -67,8 +81,8 @@ const postUploadFile = [
 					folderId: parseInt(req.body.folderId),
 				},
 			});
-			console.log(file);
-			
+			console.log("postUpdateFile:", file);
+
 			res.redirect("/folder");
 		} catch (error) {
 			console.error(error);

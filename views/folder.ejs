@@ -16,7 +16,7 @@
 						</thead>
 						<tbody>
 							<% rootFolder.files.forEach((file) => { %>
-								<%- include('./partials/tableRow.ejs', {file}) %>
+								<%- include('./partials/tableRow.ejs', {file, formatFileSize}) %>
 						<%	}); %>
 						</tbody>
 						
