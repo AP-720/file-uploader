@@ -30,6 +30,9 @@ model Folder {
   owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId   Int
   isRoot    Boolean  @default(false)
+  parentId  Int?
+  parent    Folder?  @relation("FolderTree", fields: [parentId], references: [id])
+  children  Folder[] @relation("FolderTree")
   files     File[]
 }
 

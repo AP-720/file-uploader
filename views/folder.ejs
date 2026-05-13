@@ -15,17 +15,21 @@
 							</tr>
 						</thead>
 						<tbody>
-							<% rootFolder.files.forEach((file) => { %>
+								<% if (folder.children.length !== 0) { %>
+								<% folder.children.forEach((folder) => { %>
+								<%- include('./partials/folderRow.ejs', {folder}) %>
+								<% })} %>
+
+								<% folder.files.forEach((file) => { %>
 								<%- include('./partials/tableRow.ejs', {file, formatFileSize}) %>
 						<%	}); %>
 						</tbody>
-						
 					</table>
 				</div>
 				<div>
 					<%- include("./partials/errors.ejs") %>
 					<div class="form-container">
-						<h2>Upload</h2>
+						<h2>Upload File</h2>
 						<form
 							action="/folder/upload"
 							method="post"
@@ -35,9 +39,17 @@
 								>Select file:<input type="file" name="upload" id="upload"
 							/></label>
 
-							<input type="text" name="folderId" value="<%= rootFolder.id %>" hidden>
+							<input type="text" name="folderId" value="<%= folder.id %>" hidden>
 
 							<button class="justify-self-center" type="submit">Upload</button>
+						</form>
+						<h2>Create Folder</h2>
+						<form action="/folder/create" method="post">
+							<label for="folderName">Folder Name:<input type="text" name="folderName" id="folderName"></label>
+
+							<input type="text" name="parentId" value="<%= folder.id %>" hidden>
+
+							<button class="justify-self-center" type="submit">Create</button>
 						</form>
 					</div>
 				</div>

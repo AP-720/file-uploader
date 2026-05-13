@@ -50,18 +50,27 @@ const getFolder = [
 	isAuth,
 	async (req, res) => {
 		const userId = req.user.id;
+		const folderId = Number(req.params.id);
 
 		try {
-			const rootFolder = await prisma.folder.findFirst({
-				where: {
-					ownerId: userId,
-					isRoot: true,
-				},
-				include: { files: true },
-			});
-			console.log("getFolder:", rootFolder);
+			const folder = folderId
+				? await prisma.folder.findFirst({
+						where: {
+							ownerId: userId,
+							id: folderId,
+						},
+						include: { children: true, files: true },
+					})
+				: await prisma.folder.findFirst({
+						where: {
+							ownerId: userId,
+							isRoot: true,
+						},
+						include: { children: true, files: true },
+					});
+			console.log("getFolder:", folder);
 
-			res.render("folder", { title: "Folder", rootFolder, formatFileSize });
+			res.render("folder", { title: "Folder", folder, formatFileSize });
 		} catch (error) {
 			console.error(error);
 			res.status(500).send("Server error");
@@ -91,4 +100,26 @@ const postUploadFile = [
 	},
 ];
 
-module.exports = { getFolder, postUploadFile };
+const postCreateFolder = [
+	isAuth,
+	async (req, res) => {
+		try {
+			const userId = req.user.id;
+			const folder = await prisma.folder.create({
+				data: {
+					name: req.body.folderName,
+					ownerId: userId,
+					parentId: parseInt(req.body.parentId),
+				},
+			});
+			console.log("postCreateFolder:", folder);
+
+			res.redirect("/folder");
+		} catch (error) {
+			console.error(error);
+			res.status(500).send("Server error");
+		}
+	},
+];
+
+module.exports = { getFolder, postUploadFile, postCreateFolder };
