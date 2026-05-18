@@ -90,7 +90,7 @@ const postUploadFile = [
 					folderId: parseInt(req.body.folderId),
 				},
 			});
-			console.log("postUpdateFile:", file);
+			console.log("postUploadFile:", file);
 
 			res.redirect("/folder");
 		} catch (error) {
