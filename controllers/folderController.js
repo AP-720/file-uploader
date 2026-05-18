@@ -59,7 +59,7 @@ const getFolder = [
 							ownerId: userId,
 							id: folderId,
 						},
-						include: { children: true, files: true },
+						include: { children: true, files: true, parent: { select: {name: true} } },
 					})
 				: await prisma.folder.findFirst({
 						where: {
@@ -82,17 +82,18 @@ const postUploadFile = [
 	upload.single("upload"),
 	async (req, res) => {
 		try {
+			const folderId = parseInt(req.body.folderId);
 			const file = await prisma.file.create({
 				data: {
 					name: req.file.filename,
 					size: req.file.size,
 					url: req.file.path,
-					folderId: parseInt(req.body.folderId),
+					folderId: folderId,
 				},
 			});
 			console.log("postUploadFile:", file);
 
-			res.redirect("/folder");
+			res.redirect(`/folder/${folderId}`);
 		} catch (error) {
 			console.error(error);
 			res.status(500).send("Server error");
@@ -104,17 +105,18 @@ const postCreateFolder = [
 	isAuth,
 	async (req, res) => {
 		try {
+			const parentId = parseInt(req.body.parentId);
 			const userId = req.user.id;
 			const folder = await prisma.folder.create({
 				data: {
 					name: req.body.folderName,
 					ownerId: userId,
-					parentId: parseInt(req.body.parentId),
+					parentId: parentId,
 				},
 			});
 			console.log("postCreateFolder:", folder);
 
-			res.redirect("/folder");
+			res.redirect(`/folder/${parentId}`);
 		} catch (error) {
 			console.error(error);
 			res.status(500).send("Server error");

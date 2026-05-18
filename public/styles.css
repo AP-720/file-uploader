@@ -132,6 +132,13 @@ a:visited {
 	padding: var(--spacing-xl) var(--spacing-md);
 }
 
+.folder-nav-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 0 var(--spacing-md) 0;
+}
+
 .layout-container {
 	display: grid;
 	grid-template-columns: 2fr 1fr;

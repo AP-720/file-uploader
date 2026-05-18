@@ -5,7 +5,12 @@
 		<div class="content-container">
 			<div class="layout-container">
 				<div class="file-container">
-					<h2>Files</h2>
+					<div class="folder-nav-container">
+						<h2>Files</h2>
+						<% if (folder.parentId) { %>
+							<a href="/folder/<%=folder.parentId%>">Back to <%= folder.parent.name %></a>
+						<% } %>
+					</div>
 					<table class="file-table">
 						<thead>
 							<tr>
