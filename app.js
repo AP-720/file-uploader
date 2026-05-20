@@ -9,6 +9,7 @@ const { prisma } = require("./lib/prisma.js");
 const indexRouter = require("./routes/index");
 const signUpRouter = require("./routes/signUp");
 const folderRouter = require("./routes/folder");
+const fileRouter = require("./routes/file");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
 app.use("/", indexRouter);
 app.use("/sign-up", signUpRouter);
 app.use("/folder", folderRouter);
+app.use("/file", fileRouter);
 
 app.listen(PORT, (error) => {
 	if (error) {

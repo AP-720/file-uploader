@@ -1,39 +1,6 @@
 const { prisma } = require("../lib/prisma.js");
 const { isAuth } = require("../middleware/authMiddleware");
-const multer = require("multer");
-const path = require("path");
 const { body, validationResult, matchedData } = require("express-validator");
-const { name } = require("ejs");
-const { log } = require("console");
-
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, "public/files");
-	},
-	filename: function (req, file, cb) {
-		const now = new Date();
-
-		const pad = (n, size = 2) => String(n).padStart(size, "0");
-
-		const timestamp = [
-			now.getFullYear(),
-			pad(now.getMonth() + 1),
-			pad(now.getDate()),
-			pad(now.getHours()),
-			pad(now.getMinutes()),
-			pad(now.getSeconds()),
-			pad(now.getMilliseconds(), 3),
-		].join("");
-
-		const extension = path.extname(file.originalname);
-
-		const filename = path.basename(file.originalname, extension);
-
-		cb(null, filename + "-" + timestamp + extension);
-	},
-});
-
-const upload = multer({ storage: storage });
 
 function formatFileSize(fileSize) {
 	const number = Number(fileSize);
@@ -79,31 +46,8 @@ const getFolder = [
 						},
 						include: { children: true, files: true },
 					});
-			// console.log("getFolder:", folder);
 
 			res.render("folder", { title: "Folder", folder, formatFileSize });
-		} catch (error) {
-			console.error(error);
-			res.status(500).send("Server error");
-		}
-	},
-];
-
-const postUploadFile = [
-	upload.single("upload"),
-	async (req, res) => {
-		try {
-			const folderId = parseInt(req.body.folderId);
-			await prisma.file.create({
-				data: {
-					name: req.file.filename,
-					size: req.file.size,
-					url: req.file.path,
-					folderId: folderId,
-				},
-			});
-
-			res.redirect(`/folder/${folderId}`);
 		} catch (error) {
 			console.error(error);
 			res.status(500).send("Server error");
@@ -232,7 +176,6 @@ const postDeleteFolder = [
 
 module.exports = {
 	getFolder,
-	postUploadFile,
 	postCreateFolder,
 	getUpdateFolder,
 	postUpdateFolder,
