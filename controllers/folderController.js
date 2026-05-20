@@ -2,6 +2,9 @@ const { prisma } = require("../lib/prisma.js");
 const { isAuth } = require("../middleware/authMiddleware");
 const multer = require("multer");
 const path = require("path");
+const { body, validationResult, matchedData } = require("express-validator");
+const { name } = require("ejs");
+const { log } = require("console");
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -46,6 +49,10 @@ function formatFileSize(fileSize) {
 	}
 }
 
+const validateFolderName = [
+	body("updatedName").trim().notEmpty().withMessage("Name is required."),
+];
+
 const getFolder = [
 	isAuth,
 	async (req, res) => {
@@ -59,7 +66,11 @@ const getFolder = [
 							ownerId: userId,
 							id: folderId,
 						},
-						include: { children: true, files: true, parent: { select: {name: true} } },
+						include: {
+							children: true,
+							files: true,
+							parent: { select: { name: true } },
+						},
 					})
 				: await prisma.folder.findFirst({
 						where: {
@@ -68,7 +79,7 @@ const getFolder = [
 						},
 						include: { children: true, files: true },
 					});
-			console.log("getFolder:", folder);
+			// console.log("getFolder:", folder);
 
 			res.render("folder", { title: "Folder", folder, formatFileSize });
 		} catch (error) {
@@ -91,7 +102,7 @@ const postUploadFile = [
 					folderId: folderId,
 				},
 			});
-			console.log("postUploadFile:", file);
+			// console.log("postUploadFile:", file);
 
 			res.redirect(`/folder/${folderId}`);
 		} catch (error) {
@@ -114,7 +125,7 @@ const postCreateFolder = [
 					parentId: parentId,
 				},
 			});
-			console.log("postCreateFolder:", folder);
+			// console.log("postCreateFolder:", folder);
 
 			res.redirect(`/folder/${parentId}`);
 		} catch (error) {
@@ -124,4 +135,80 @@ const postCreateFolder = [
 	},
 ];
 
-module.exports = { getFolder, postUploadFile, postCreateFolder };
+const getUpdateFolder = [
+	isAuth,
+	async (req, res) => {
+		try {
+			const userId = req.user.id;
+			const folderId = Number(req.params.id);
+
+			const folder = await prisma.folder.findFirst({
+				where: {
+					ownerId: userId,
+					id: folderId,
+				},
+				select: { id: true, name: true },
+			});
+
+			if (!folder) {
+				return res.status(404).send("Folder not found.");
+			}
+
+			res.render("updateFolder", { title: "Update", folder });
+		} catch (error) {
+			console.error(error);
+			res.status(500).send("Server error");
+		}
+	},
+];
+const postUpdateFolder = [
+	isAuth,
+	validateFolderName,
+	async (req, res) => {
+		const userId = req.user.id;
+		const folderId = Number(req.params.id);
+
+		try {
+			// Query first to verify the folder exists and belongs to the current user (IDOR protection).
+			// Also gives the current name for re-rendering on validation failure,
+			// and parentId for the redirect without needing a second query after update.
+			const folder = await prisma.folder.findFirst({
+				where: { id: folderId, ownerId: userId },
+				select: { id: true, name: true, parentId: true },
+			});
+
+			if (!folder) {
+				return res.status(404).send("Folder not found.");
+			}
+
+			const errors = validationResult(req);
+			if (!errors.isEmpty()) {
+				return res.status(400).render("updateFolder", {
+					title: "Update",
+					folder,
+					errors: errors.array(),
+				});
+			}
+
+			const { updatedName } = matchedData(req);
+
+			await prisma.folder.update({
+				where: { id: folderId, ownerId: userId },
+				data: { name: updatedName },
+			});
+
+			res.redirect(`/folder/${folder.parentId}`);
+		} catch (error) {
+			console.error(error);
+			res.status(500).send("Server error");
+		}
+	},
+];
+
+module.exports = {
+	getFolder,
+	postUploadFile,
+	postCreateFolder,
+	getUpdateFolder,
+	postUpdateFolder,
+};

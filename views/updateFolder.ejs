@@ -1,0 +1,30 @@
+<html>
+	<%- include("./partials/head.ejs") %>
+	<body>
+		<%- include("./partials/header.ejs") %>
+		<div class="content-container">
+			<div class="layout-container">
+				<div class="file-container">
+					<h2>Update</h2>
+
+					<form
+						action="/folder/update/<%= folder.id %>"
+						method="post"
+						class="update-form"
+					>
+						<label for="updatedName"
+							>New folder name:
+							<input
+								type="text"
+								name="updatedName"
+								id="updatedName"
+								value="<%= folder.name %>"
+						/></label>
+						<button type="submit">Update</button>
+					</form>
+					<%- include("./partials/errors.ejs") %>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
