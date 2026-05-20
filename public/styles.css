@@ -172,3 +172,10 @@ a:visited {
 .update-form {
 	padding: var(--spacing-md) 0 var(--spacing-lg) 0;
 }
+
+.delete-button {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+}

@@ -9,5 +9,6 @@ folderRouter.post("/upload", folderController.postUploadFile);
 folderRouter.post("/create", folderController.postCreateFolder);
 folderRouter.get("/update/:id", folderController.getUpdateFolder);
 folderRouter.post("/update/:id", folderController.postUpdateFolder);
+folderRouter.post("/delete/:id", folderController.postDeleteFolder);
 
 module.exports = folderRouter;
