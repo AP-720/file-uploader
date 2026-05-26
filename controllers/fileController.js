@@ -2,6 +2,7 @@ const { prisma } = require("../lib/prisma.js");
 const { isAuth } = require("../middleware/authMiddleware");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs").promises;
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -54,6 +55,37 @@ const postUploadFile = [
 	},
 ];
 
+const postDeleteFile = [
+	isAuth,
+	async (req, res) => {
+		const userId = req.user.id;
+		const fileId = Number(req.params.id);
+
+		try {
+			const file = await prisma.file.findFirst({
+				where: { id: fileId, folder: { ownerId: userId } },
+				select: { url: true, folderId: true },
+			});
+
+			if (!file) {
+				return res.status(404).send("File not found.");
+			}
+
+			await fs.unlink(`${file.url}`);
+
+			await prisma.file.delete({
+				where: { id: fileId, folderId: file.folderId },
+			});
+
+			res.redirect(`/folder/${file.folderId}`);
+		} catch (error) {
+			console.error(error);
+			res.status(500).send("Server error");
+		}
+	},
+];
+
 module.exports = {
 	postUploadFile,
+	postDeleteFile,
 };
