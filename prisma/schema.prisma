@@ -31,7 +31,7 @@ model Folder {
   ownerId   Int
   isRoot    Boolean  @default(false)
   parentId  Int?
-  parent    Folder?  @relation("FolderTree", fields: [parentId], references: [id])
+  parent    Folder?  @relation("FolderTree", fields: [parentId], references: [id], onDelete: Cascade)
   children  Folder[] @relation("FolderTree")
   files     File[]
 }

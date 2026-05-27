@@ -1,6 +1,7 @@
 const { prisma } = require("../lib/prisma.js");
 const { isAuth } = require("../middleware/authMiddleware");
 const { body, validationResult, matchedData } = require("express-validator");
+const fs = require("fs").promises;
 
 function formatFileSize(fileSize) {
 	const number = Number(fileSize);
@@ -147,6 +148,31 @@ const postUpdateFolder = [
 	},
 ];
 
+async function getAllUrls(folderId) {
+	let url = [];
+
+	const result = await prisma.folder.findFirst({
+		where: { id: folderId },
+		select: {
+			children: { select: { id: true } },
+			files: { select: { url: true } },
+		},
+	});
+
+	result.files.forEach((file) => {
+		return url.push(file.url);
+	});
+
+	// Needed to us map as forEach doesn't work with async
+	const promises = result.children.map(async (folder) => {
+		return url.push(...(await getAllUrls(folder.id)));
+	});
+
+	await Promise.all(promises);
+
+	return url;
+}
+
 const postDeleteFolder = [
 	isAuth,
 	async (req, res) => {
@@ -162,6 +188,14 @@ const postDeleteFolder = [
 			if (!folder) {
 				return res.status(404).send("Folder not found.");
 			}
+
+			const fileUrl = await getAllUrls(folderId);
+
+			const promises = fileUrl.map(async (url) => {
+				await fs.unlink(url);
+			});
+
+			await Promise.all(promises);
 
 			await prisma.folder.delete({
 				where: { id: folderId, ownerId: userId },
