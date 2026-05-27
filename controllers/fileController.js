@@ -31,15 +31,15 @@ const storage = multer.diskStorage({
 	},
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 1e7 } });
 
 const postUploadFile = [
 	upload.single("upload"),
 	async (req, res) => {
 		try {
 			const folderId = parseInt(req.body.folderId);
-			
-			if(!req.file) return res.redirect(`/folder/${folderId}`);
+
+			if (!req.file) return res.redirect(`/folder/${folderId}`);
 
 			await prisma.file.create({
 				data: {
@@ -52,8 +52,13 @@ const postUploadFile = [
 
 			res.redirect(`/folder/${folderId}`);
 		} catch (error) {
-			console.error(error);
-			res.status(500).send("Server error");
+			if (error instanceof multer.MulterError) {
+				console.error(error);
+				res.status(400).send("File size to big.");
+			} else {
+				console.error(error);
+				res.status(500).send("Server error");
+			}
 		}
 	},
 ];
