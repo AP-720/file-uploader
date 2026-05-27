@@ -85,7 +85,34 @@ const postDeleteFile = [
 	},
 ];
 
+const getDownloadFile = [
+	isAuth,
+	async (req, res) => {
+		const userId = req.user.id;
+		const fileId = Number(req.params.id);
+
+		try {
+			const file = await prisma.file.findFirst({
+				where: { id: fileId, folder: { ownerId: userId } },
+				select: { url: true },
+			});
+
+			if (!file) {
+				return res.status(404).send("File not found.");
+			}
+
+			const filePath = path.join(__dirname, "..", file.url);
+
+			res.download(filePath);
+		} catch (error) {
+			console.error(error);
+			res.status(500).send("Server error");
+		}
+	},
+];
+
 module.exports = {
 	postUploadFile,
 	postDeleteFile,
+	getDownloadFile,
 };
