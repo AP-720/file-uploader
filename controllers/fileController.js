@@ -38,6 +38,9 @@ const postUploadFile = [
 	async (req, res) => {
 		try {
 			const folderId = parseInt(req.body.folderId);
+			
+			if(!req.file) return res.redirect(`/folder/${folderId}`);
+
 			await prisma.file.create({
 				data: {
 					name: req.file.filename,
