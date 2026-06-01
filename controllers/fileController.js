@@ -1,37 +1,10 @@
+const path = require("path");
+
+const multer = require("multer");
+
 const { prisma } = require("../lib/prisma.js");
 const { isAuth } = require("../middleware/authMiddleware");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs").promises;
-
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, "public/files");
-	},
-	filename: function (req, file, cb) {
-		const now = new Date();
-
-		const pad = (n, size = 2) => String(n).padStart(size, "0");
-
-		const timestamp = [
-			now.getFullYear(),
-			pad(now.getMonth() + 1),
-			pad(now.getDate()),
-			pad(now.getHours()),
-			pad(now.getMinutes()),
-			pad(now.getSeconds()),
-			pad(now.getMilliseconds(), 3),
-		].join("");
-
-		const extension = path.extname(file.originalname);
-
-		const filename = path.basename(file.originalname, extension);
-
-		cb(null, filename + "-" + timestamp + extension);
-	},
-});
-
-const upload = multer({ storage: storage, limits: { fileSize: 1e7 } });
+const upload = require("../middleware/multer.js");
 
 const postUploadFile = [
 	upload.single("upload"),
@@ -43,7 +16,7 @@ const postUploadFile = [
 
 			await prisma.file.create({
 				data: {
-					name: req.file.filename,
+					name: path.basename(req.file.filename),
 					size: req.file.size,
 					url: req.file.path,
 					folderId: folderId,
