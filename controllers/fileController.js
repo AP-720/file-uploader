@@ -5,6 +5,7 @@ const multer = require("multer");
 const { prisma } = require("../lib/prisma.js");
 const { isAuth } = require("../middleware/authMiddleware");
 const upload = require("../middleware/multer.js");
+const cloudinary = require("../lib/cloudinary.js");
 
 const postUploadFile = [
 	upload.single("upload"),
@@ -18,6 +19,7 @@ const postUploadFile = [
 				data: {
 					name: path.basename(req.file.filename),
 					size: req.file.size,
+					publicId: req.file.filename,
 					url: req.file.path,
 					folderId: folderId,
 				},
@@ -45,14 +47,14 @@ const postDeleteFile = [
 		try {
 			const file = await prisma.file.findFirst({
 				where: { id: fileId, folder: { ownerId: userId } },
-				select: { url: true, folderId: true },
+				select: { url: true, publicId: true, folderId: true },
 			});
 
 			if (!file) {
 				return res.status(404).send("File not found.");
 			}
 
-			await fs.unlink(`${file.url}`);
+			await cloudinary.uploader.destroy(file.publicId);
 
 			await prisma.file.delete({
 				where: { id: fileId, folderId: file.folderId },
