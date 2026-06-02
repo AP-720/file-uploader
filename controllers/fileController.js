@@ -77,16 +77,18 @@ const getDownloadFile = [
 		try {
 			const file = await prisma.file.findFirst({
 				where: { id: fileId, folder: { ownerId: userId } },
-				select: { url: true },
+				select: { name: true, publicId: true },
 			});
 
 			if (!file) {
 				return res.status(404).send("File not found.");
 			}
 
-			const filePath = path.join(__dirname, "..", file.url);
+			const downloadUrl = await cloudinary.url(file.publicId, {
+				flags: `attachment:${file.name}`,
+			});
 
-			res.download(filePath);
+			res.redirect(downloadUrl);
 		} catch (error) {
 			console.error(error);
 			res.status(500).send("Server error");
