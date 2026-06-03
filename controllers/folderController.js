@@ -1,7 +1,7 @@
 const { prisma } = require("../lib/prisma.js");
 const { isAuth } = require("../middleware/authMiddleware");
 const { body, validationResult, matchedData } = require("express-validator");
-const fs = require("fs").promises;
+const cloudinary = require("../lib/cloudinary.js");
 
 function formatFileSize(fileSize) {
 	const number = Number(fileSize);
@@ -148,29 +148,29 @@ const postUpdateFolder = [
 	},
 ];
 
-async function getAllUrls(folderId) {
-	let url = [];
+async function getAllPublicIds(folderId) {
+	let publicIds = [];
 
 	const result = await prisma.folder.findFirst({
 		where: { id: folderId },
 		select: {
 			children: { select: { id: true } },
-			files: { select: { url: true } },
+			files: { select: { publicId: true } },
 		},
 	});
 
 	result.files.forEach((file) => {
-		return url.push(file.url);
+		publicIds.push(file.publicId);
 	});
 
 	// Needed to us map as forEach doesn't work with async
 	const promises = result.children.map(async (folder) => {
-		return url.push(...(await getAllUrls(folder.id)));
+		publicIds.push(...(await getAllPublicIds(folder.id)));
 	});
 
 	await Promise.all(promises);
 
-	return url;
+	return publicIds;
 }
 
 const postDeleteFolder = [
@@ -189,11 +189,11 @@ const postDeleteFolder = [
 				return res.status(404).send("Folder not found.");
 			}
 
-			const fileUrl = await getAllUrls(folderId);
+			const publicIds = await getAllPublicIds(folderId);
 
-			const promises = fileUrl.map(async (url) => {
-				await fs.unlink(url);
-			});
+			const promises = publicIds.map((publicId) =>
+				cloudinary.uploader.destroy(publicId),
+			);
 
 			await Promise.all(promises);
 
